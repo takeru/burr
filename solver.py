@@ -9,6 +9,7 @@ with app.setup:
     import marimo as mo
     import numpy as np
     from blue import blue_puzzle_txt
+    from probrems import without_internal_voids
 
 
 @app.function
@@ -128,7 +129,8 @@ class Solver:
 
 @app.cell
 def _(profile):
-    solver = Solver(blue_puzzle_txt())
+    # solver = Solver(blue_puzzle_txt())
+    solver = Solver(without_internal_voids())
 
 
     def callback(x):
