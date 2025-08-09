@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.14.15"
+__generated_with = "0.14.16"
 app = marimo.App(width="medium")
 
 with app.setup:
@@ -12,15 +12,23 @@ with app.setup:
     function render({ model, el }) {
 
       let button = document.createElement("button");
-      button.innerHTML = `count is ${model.get("value")}`;
 
       button.addEventListener("click", () => {
         model.set("value", model.get("value") + 1);
         model.save_changes();
       });
 
+      const updateInnerHTML = ()=>{
+        button.innerHTML = `count=${model.get("value")} data=${model.get("data")}`;
+      }
+      updateInnerHTML();
+
       model.on("change:value", () => {
-        button.innerHTML = `count is ${model.get("value")}`;
+        updateInnerHTML();
+      });
+
+      model.on("change:data", () => {
+        updateInnerHTML();
       });
 
       el.appendChild(button);
@@ -34,24 +42,73 @@ class CounterWidget(anywidget.AnyWidget):
     _esm = CounterESM
     # Stateful property that can be accessed by JavaScript & Python
     value = traitlets.Int(0).tag(sync=True)
+    data = traitlets.List([1, 2, 3]).tag(sync=True)
+
+
+@app.cell
+def _(mo):
+    count_slider = mo.ui.slider(start=0, stop=100)
+    return (count_slider,)
 
 
 @app.cell
 def _():
     counter_widget = CounterWidget()
-    counter_widget
     return (counter_widget,)
+
+
+@app.cell
+def _(count_slider, counter_widget):
+    counter_widget.value = count_slider.value
+    return
+
+
+@app.cell
+def _(count_slider, counter_widget, mo):
+    mo.md(
+        f"""
+    - {counter_widget}
+    - {count_slider}
+    - {count_slider.value}
+    """
+    )
+    return
+
+
+@app.cell
+def _():
+    # [counter_widget,count_slider]
+    # mo.ui.array(elements=[counter_widget,count_slider])
+    return
+
+
+@app.cell
+def _(count_slider):
+    count_slider
+    return
+
+
+@app.cell
+def _():
+    # counter_widget.value = 100
+    return
+
+
+@app.cell
+def _():
+    # counter_widget.data = [2, 3]
+    return
 
 
 @app.cell
 def _():
     import marimo as mo
-    return
+    return (mo,)
 
 
 @app.cell
-def _(counter_widget):
-    print(counter_widget.value)
+def _():
+    # print(counter_widget.value)
     return
 
 

@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.14.15"
+__generated_with = "0.14.16"
 app = marimo.App(width="medium")
 
 with app.setup:
@@ -105,7 +105,7 @@ with app.setup:
           const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
           directionalLight.position.set(5, 10, 5);
           directionalLight.castShadow = true;  // 影を落とす
-          
+
           // 影の品質設定
           directionalLight.shadow.mapSize.width = 2048;
           directionalLight.shadow.mapSize.height = 2048;
@@ -115,7 +115,7 @@ with app.setup:
           directionalLight.shadow.camera.right = 20;
           directionalLight.shadow.camera.top = 20;
           directionalLight.shadow.camera.bottom = -20;
-          
+
           scene.add(directionalLight);
 
           // 3. ポイントライト（電球のような点光源）
@@ -157,7 +157,7 @@ with app.setup:
               const geometry = new THREE.BoxGeometry(size.x, size.y, size.z);
               const color = new THREE.Color(d.color);
               const opacity = d.opacity;
-              
+
               // MeshStandardMaterialに変更（物理ベースレンダリング）
               const material = new THREE.MeshStandardMaterial({ 
                 color: color,
@@ -168,7 +168,7 @@ with app.setup:
                 emissive: color,   // 発光色
                 emissiveIntensity: 0.1  // 発光強度
               });
-              
+
               const cube = new THREE.Mesh(geometry, material);
               cube.position.set(d.position.x, d.position.y, d.position.z);
               cube.castShadow = true;     // 影を落とす
@@ -184,6 +184,7 @@ with app.setup:
 
           // データが変更されたときの処理
           model.on("change:data", () => {
+            console.log("change:data", model.get("data"));
             const newData = model.get("data");
             draw(newData);
           });
